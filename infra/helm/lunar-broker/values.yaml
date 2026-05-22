@@ -1,0 +1,131 @@
+# Lunar Broker Helm Chart Values
+
+global:
+  environment: production
+  domain: lunar-broker.example.com
+
+# Infrastructure
+postgresql:
+  enabled: true
+  auth:
+    postgresPassword: ${POSTGRES_PASSWORD:-changeme}
+    database: lunar_broker
+  primary:
+    persistence:
+      size: 50Gi
+    resources:
+      requests:
+        memory: 1Gi
+        cpu: 500m
+
+redis:
+  enabled: true
+  architecture: standalone
+  auth:
+    enabled: true
+    password: ${REDIS_PASSWORD:-changeme}
+  master:
+    persistence:
+      size: 10Gi
+
+nats:
+  enabled: true
+  cluster:
+    enabled: false
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 250m
+
+# Application services
+gateway:
+  image:
+    repository: lunar-broker/gateway
+    tag: latest
+  replicas: 2
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 250m
+    limits:
+      memory: 512Mi
+      cpu: 500m
+  service:
+    type: ClusterIP
+    port: 8080
+
+rustApi:
+  image:
+    repository: lunar-broker/rust-api
+    tag: latest
+  replicas: 3
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 500m
+    limits:
+      memory: 1Gi
+      cpu: 1000m
+  service:
+    type: ClusterIP
+    port: 8081
+
+pythonApi:
+  image:
+    repository: lunar-broker/python-api
+    tag: latest
+  replicas: 2
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 250m
+    limits:
+      memory: 1Gi
+      cpu: 500m
+  service:
+    type: ClusterIP
+    port: 8082
+
+frontend:
+  image:
+    repository: lunar-broker/frontend
+    tag: latest
+  replicas: 2
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 250m
+    limits:
+      memory: 512Mi
+      cpu: 500m
+  service:
+    type: ClusterIP
+    port: 3000
+  env:
+    NEXT_PUBLIC_API_URL: https://lunar-broker.example.com/api
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  hosts:
+    - host: lunar-broker.example.com
+      paths:
+        - path: /api/v1/auth
+          pathType: Prefix
+          serviceName: gateway
+          servicePort: 8080
+        - path: /api/v1/matching
+          pathType: Prefix
+          serviceName: rust-api
+          servicePort: 8081
+        - path: /
+          pathType: Prefix
+          serviceName: frontend
+          servicePort: 3000
+  tls:
+    - secretName: lunar-broker-tls
+      hosts:
+        - lunar-broker.example.com
