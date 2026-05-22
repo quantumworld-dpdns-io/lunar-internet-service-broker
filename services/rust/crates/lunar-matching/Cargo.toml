@@ -1,0 +1,9 @@
+[package]
+name = "lunar-matching"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+lunar-core = { path = "../lunar-core" }
+async-trait = "0.1"
+uuid = { workspace = true }

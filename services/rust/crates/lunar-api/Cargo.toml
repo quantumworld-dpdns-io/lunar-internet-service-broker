@@ -1,0 +1,18 @@
+[package]
+name = "lunar-api"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+lunar-core = { path = "../lunar-core" }
+lunar-matching = { path = "../lunar-matching" }
+axum = "0.7"
+tokio = { workspace = true }
+tower-http = { version = "0.5", features = ["cors", "trace"] }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+anyhow = { workspace = true }
+uuid = { workspace = true }
+chrono = { workspace = true }

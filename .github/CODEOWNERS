@@ -1,0 +1,29 @@
+# Default owners
+* @quantumworld-dpdns-io/maintainers
+
+# Go services
+/services/go/ @quantumworld-dpdns-io/go-team
+
+# Rust services
+/services/rust/ @quantumworld-dpdns-io/rust-team
+
+# Python services
+/services/python/ @quantumworld-dpdns-io/python-team
+
+# Julia services
+/services/julia/ @quantumworld-dpdns-io/julia-team
+
+# Solidity contracts
+/services/solidity/ @quantumworld-dpdns-io/solidity-team
+
+# Frontend
+/services/nextjs/ @quantumworld-dpdns-io/frontend-team
+
+# Infrastructure
+/infra/ @quantumworld-dpdns-io/infra-team
+
+# Database
+/db/ @quantumworld-dpdns-io/db-team
+
+# Tests
+/tests/ @quantumworld-dpdns-io/qa-team

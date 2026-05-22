@@ -1,0 +1,8 @@
+[package]
+name = "lunar-crypto"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+lunar-core = { path = "../lunar-core" }
+sha2 = "0.10"

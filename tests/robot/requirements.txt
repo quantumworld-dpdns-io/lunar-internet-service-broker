@@ -1,0 +1,8 @@
+robotframework==7.0
+robotframework-requests==0.9.7
+robotframework-seleniumlibrary==6.2.0
+robotframework-databaselibrary==1.2.5
+requests==2.31.0
+selenium==4.18.0
+psycopg2-binary==2.9.9
+web3==6.15.0
