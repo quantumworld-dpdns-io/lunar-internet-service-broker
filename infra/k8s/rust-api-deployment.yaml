@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rust-api
+  namespace: lunar-broker
+  labels:
+    app: rust-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: rust-api
+  template:
+    metadata:
+      labels:
+        app: rust-api
+    spec:
+      containers:
+        - name: rust-api
+          image: lunar-broker/rust-api:latest
+          ports:
+            - containerPort: 8081
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8081
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8081
+            initialDelaySeconds: 5
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rust-api
+  namespace: lunar-broker
+spec:
+  selector:
+    app: rust-api
+  ports:
+    - port: 8081
+      targetPort: 8081
+  type: ClusterIP
