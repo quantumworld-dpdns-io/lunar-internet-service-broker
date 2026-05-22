@@ -1,0 +1,35 @@
+[project]
+name = "lunar-broker"
+plan = "free"
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["https://*.vercel.app"]
+jwt_expiry = 3600
+enable_signup = true
+
+[auth.email]
+enable_confirmations = false
+enable_autoconfirm = true
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+
+[db]
+port = 54322
+migration_dir = "supabase/migrations"
+
+[storage]
+enabled = true
+
+[storage.buckets.documents]
+public = false
+allowed_mime_types = ["application/pdf", "image/*"]
+file_size_limit = "10MB"
+
+[edge-runtime]
+enabled = true
+policy = "per_worker"
