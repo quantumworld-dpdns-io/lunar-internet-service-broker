@@ -1,0 +1,110 @@
+name: lunar-broker
+
+services:
+  # ─── Infrastructure ───────────────────────────
+  supabase-db:
+    image: supabase/postgres:15.6.1.116
+    ports:
+      - "54322:5432"
+    environment:
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  nats:
+    image: nats:2.10-alpine
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+    command: ["-js", "-sd", "/data"]
+    volumes:
+      - natsdata:/data
+
+  # ─── Proxy ────────────────────────────────────
+  nginx:
+    build: infra/nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - gateway
+      - rust-api
+      - python-api
+      - julia-api
+      - frontend
+    volumes:
+      - ./infra/nginx/ssl:/etc/nginx/ssl
+      - ./infra/nginx/logs:/var/log/nginx
+
+  # ─── Services ─────────────────────────────────
+  gateway:
+    build: services/go
+    ports:
+      - "8080:8080"
+    env_file: .env
+    depends_on:
+      supabase-db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      nats:
+        condition: service_started
+
+  rust-api:
+    build: services/rust
+    ports:
+      - "8081:8081"
+    env_file: .env
+    depends_on:
+      supabase-db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  python-api:
+    build: services/python
+    ports:
+      - "8082:8082"
+    env_file: .env
+    depends_on:
+      supabase-db:
+        condition: service_healthy
+
+  julia-api:
+    build: services/julia
+    ports:
+      - "8083:8083"
+    env_file: .env
+    depends_on:
+      supabase-db:
+        condition: service_healthy
+
+  frontend:
+    build: services/nextjs
+    ports:
+      - "3000:3000"
+    env_file: .env
+    depends_on:
+      - gateway
+
+volumes:
+  pgdata:
+  redisdata:
+  natsdata:
