@@ -179,21 +179,21 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build Go Docker image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         with:
           context: services/go
           push: false
           tags: lunar-broker/gateway:latest
 
       - name: Build Rust Docker image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         with:
           context: services/rust
           push: false
           tags: lunar-broker/rust-api:latest
 
       - name: Build Frontend Docker image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         with:
           context: services/nextjs
           push: false
