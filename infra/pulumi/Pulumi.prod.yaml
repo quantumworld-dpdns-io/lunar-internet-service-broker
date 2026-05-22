@@ -1,0 +1,5 @@
+config:
+  lunar-broker:environment: prod
+  lunar-broker:region: us-east-1
+  lunar-broker:domain: lunar-broker.example.com
+  aws:region: us-east-1
