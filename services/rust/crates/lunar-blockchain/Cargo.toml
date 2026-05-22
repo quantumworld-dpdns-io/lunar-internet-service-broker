@@ -1,0 +1,14 @@
+[package]
+name = "lunar-blockchain"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+lunar-core = { path = "../lunar-core" }
+async-trait = "0.1"
+hex = "0.4"
+chrono = { workspace = true }
+uuid = { workspace = true }
+
+[dev-dependencies]
+tokio = { workspace = true }
