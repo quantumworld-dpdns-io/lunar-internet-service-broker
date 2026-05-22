@@ -1,0 +1,28 @@
+name: lunar-broker-dev
+
+services:
+  # Overrides for local development
+  supabase-db:
+    ports:
+      - "54322:5432"
+
+  redis:
+    ports:
+      - "6379:6379"
+
+  nats:
+    ports:
+      - "4222:4222"
+
+  mailpit:
+    image: axllent/mailpit
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+  adminer:
+    image: adminer
+    ports:
+      - "8085:8080"
+    depends_on:
+      - supabase-db
