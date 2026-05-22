@@ -1,25 +1,79 @@
 # OS
 .DS_Store
 Thumbs.db
+*.swp
+*.swo
+*~
 
 # Editor
 .vscode/
 .idea/
-*.swp
-
-# Build artifacts
-dist/
-build/
-__pycache__/
-*.pyc
-*.class
-
-# Dependencies
-node_modules/
-vendor/
+*.iml
+.vim/
 
 # Environment
 .env
 .env.*
 !.env.example
 /scripts
+
+# Build artifacts
+dist/
+build/
+target/
+*.o
+*.so
+*.dylib
+*.exe
+*.dll
+
+# Go
+vendor/
+Godeps/
+
+# Rust
+services/rust/target/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Julia
+*.jl.cov
+*.jl.*.cov
+Manifest.toml
+
+# Solidity
+services/solidity/cache/
+services/solidity/out/
+services/solidity/broadcast/
+
+# Node
+node_modules/
+.next/
+out/
+
+# Docker
+.dockerignore
+
+# Logs
+*.log
+logs/
+
+# Supabase
+db/.branches
+db/.temp
+
+# Misc
+*.bak
+*.orig
+.DS_Store
