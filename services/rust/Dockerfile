@@ -1,0 +1,13 @@
+FROM rust:1.80-slim-bookworm AS builder
+
+WORKDIR /app
+COPY Cargo.toml Cargo.lock ./
+COPY crates/ crates/
+RUN cargo build --release -p lunar-api
+
+FROM debian:bookworm-slim
+RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
+WORKDIR /app
+COPY --from=builder /app/target/release/lunar-api .
+EXPOSE 8081
+ENTRYPOINT ["./lunar-api"]
