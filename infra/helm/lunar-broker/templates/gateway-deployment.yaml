@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "lunar-broker.fullname" . }}-gateway
+  labels:
+    app: gateway
+    {{- include "lunar-broker.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.gateway.replicas }}
+  selector:
+    matchLabels:
+      app: gateway
+  template:
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      containers:
+        - name: gateway
+          image: "{{ .Values.gateway.image.repository }}:{{ .Values.gateway.image.tag }}"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: {{ .Values.gateway.service.port }}
+          env:
+            - name: SUPABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: lunar-broker-secrets
+                  key: supabase-url
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: lunar-broker-secrets
+                  key: jwt-secret
+          resources:
+            {{- toYaml .Values.gateway.resources | nindent 12 }}
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.gateway.service.port }}
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.gateway.service.port }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "lunar-broker.fullname" . }}-gateway
+spec:
+  selector:
+    app: gateway
+  ports:
+    - port: {{ .Values.gateway.service.port }}
+      targetPort: {{ .Values.gateway.service.port }}
+  type: {{ .Values.gateway.service.type }}
